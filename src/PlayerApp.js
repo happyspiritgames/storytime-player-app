@@ -19,7 +19,8 @@ import {
   CardSubtitle,
   CardText
 } from 'reactstrap';
-import './App.css'
+import Footer from './components/Footer';
+import './PlayerApp.css';
 
 class App extends Component {
   constructor(props) {
@@ -39,12 +40,18 @@ class App extends Component {
     return (
       <div>
         <Navbar color="inverse" light expand="md">
-          <NavbarBrand href="/library">Happy Spirit Stories</NavbarBrand>
+          <NavbarBrand href="/">Happy Spirit Stories</NavbarBrand>
           <NavbarToggler onClick={this.toggle} />
           <Collapse isOpen={this.state.isOpen} navbar>
             <Nav className="ml-auto" navbar>
               <NavItem>
+                <NavLink href="/library">Library</NavLink>
+              </NavItem>
+              <NavItem>
                 <NavLink href="/history">History</NavLink>
+              </NavItem>
+              <NavItem>
+                <NavLink href="/projects">Projects</NavLink>
               </NavItem>
               <NavItem>
                 <NavLink href="/account">Account</NavLink>
@@ -93,11 +100,13 @@ class App extends Component {
             <Col>
               <section id="about">
                 <h2>About</h2>
-                <p>Happy Spirit Stories is great place to find interest stories with multiple possible outcomes. You can play story-games, and you can write and share your own.</p>
+                <p>Happy Spirit Stories is great place to <a href="/library">find interest stories</a> with multiple possible outcomes. You can play story-games, and you can <a href="/projects">write and share your own.</a></p>
+                <p>Everything here is free. Also, we are not going to bother you with ads. Enjoy, and share us with your friends!</p>
               </section>
             </Col>
           </Row>
         </Container>
+        <Footer/>
       </div>
     );
   }
