@@ -3,6 +3,7 @@ import { Route, Switch, BrowserRouter } from 'react-router-dom'
 import Footer from './components/Footer';
 import MainNavigation from './components/MainNavigation';
 import PlayerHomePage from './components/PlayerHomePage';
+import PlayPage from './components/play';
 import LibraryPage from './components/LibraryPage';
 import HistoryPage from './components/HistoryPage';
 import ProjectsPage from './components/ProjectsPage';
@@ -18,6 +19,7 @@ class PlayerApp extends Component {
           <Switch>
             <Route exact path="/" component={PlayerHomePage} />
             <Route path="/library" component={LibraryPage} />
+            <Route path="/play" component={PlayPage} />
             <Route path="/history" component={HistoryPage} />
             <Route path="/projects" component={ProjectsPage} />
             <Route path="/account" component={AccountPage} />

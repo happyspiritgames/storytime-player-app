@@ -29,7 +29,7 @@ export default class PlayerHomePage extends Component {
                     tag="a"
                     color="success"
                     size="large"
-                    href="http://reactstrap.github.io"
+                    href="/library"
                     target="_blank"
                   >
                     Enter the Library

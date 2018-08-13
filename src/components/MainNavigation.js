@@ -36,6 +36,9 @@ export default class MainNavigation extends Component {
               <NavLink href="/library">Library</NavLink>
             </NavItem>
             <NavItem>
+              <NavLink href="/play">Play</NavLink>
+            </NavItem>
+            <NavItem>
               <NavLink href="/history">History</NavLink>
             </NavItem>
             <NavItem>
