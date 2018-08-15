@@ -35,3 +35,9 @@ Basically this is a list of to-dos. Gotta track these somewhere.
   * Use auth for permission to edit own account information.
   * Implement email change.
   * Make it look good - the start of vanity profile. The "inside jacket cover."
+
+## To Do List
+
+* Write feature tests for pages and unit tests for components.
+* Add tool for reformatting code on commits. (beautify? prettier?)
+* Reimplement a page using TypeScript and see if it makes a difference

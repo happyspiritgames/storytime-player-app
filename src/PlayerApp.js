@@ -6,7 +6,7 @@ import AccountPage from './components/AccountPage';
 import AppHomePage from './components/AppHomePage';
 import HistoryPage from './components/HistoryPage';
 import LibraryPage from './components/LibraryPage';
-import PlayerPage from './components/player';
+import StoryBook from './components/storybook';
 import ProjectsPage from './components/ProjectsPage';
 import './PlayerApp.css';
 
@@ -19,7 +19,7 @@ class PlayerApp extends Component {
           <Switch>
             <Route exact path="/" component={AppHomePage} />
             <Route path="/library" component={LibraryPage} />
-            <Route path="/player" component={PlayerPage} />
+            <Route path="/storybook" component={StoryBook} />
             <Route path="/history" component={HistoryPage} />
             <Route path="/projects" component={ProjectsPage} />
             <Route path="/account" component={AccountPage} />
