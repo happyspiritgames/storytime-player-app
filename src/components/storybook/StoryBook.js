@@ -4,6 +4,7 @@ import { Card, CardHeader, CardBody } from 'reactstrap'
 import FormattedProse from './FormattedProse'
 import Signpost from './Signpost'
 import { sceneShape, editionShape } from '../../metadata'
+import { getEdition, getEditionScene } from '../../api/readerApi'
 
 export default class StoryBook extends Component {
   static propTypes = {
@@ -11,6 +12,22 @@ export default class StoryBook extends Component {
     scene: sceneShape,
     playStory: PropTypes.func.isRequired,
     goToScene: PropTypes.func.isRequired
+  }
+
+  componentWillMount() {
+    const handleCallback = (label, data) => {
+      console.log(label, data)
+    }
+
+    getEdition('2exsllwu-2', 
+      (data) => handleCallback('success', data),
+      (error) => handleCallback('failure', error)
+    )
+    
+    getEditionScene('2exsllwu-2', 'u1pawmxp',
+      (data) => handleCallback('success', data),
+      (error) => handleCallback('failure', error)
+    )
   }
 
   renderNotReady(message) {
