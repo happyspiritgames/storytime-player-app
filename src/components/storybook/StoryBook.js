@@ -1,38 +1,28 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
+import { Card, CardHeader, CardBody } from 'reactstrap'
 import FormattedProse from './FormattedProse'
 import Signpost from './Signpost'
-import { sceneShape, editionShape } from '../../datastore/dataShapes'
+import { sceneShape, editionShape } from '../../metadata'
 
 export default class StoryBook extends Component {
   static propTypes = {
     edition: editionShape,
     scene: sceneShape,
-    playGame: PropTypes.func.isRequired,
+    playStory: PropTypes.func.isRequired,
     goToScene: PropTypes.func.isRequired
-  }
-
-  componentDidMount() {
-    console.log('Reader.componentDidMount', this.props)
-    if (!this.props.edition) {
-      this.props.playGame(this.props.match.params.editionKey)
-    }
-  }
-
-  componentWillReceiveProps(nextProps) {
-    console.log('Reader.componentWillReceiveProps', nextProps, this.props)
   }
 
   renderNotReady(message) {
     return (
-      <div id="reader">
+      <div id="storybook">
         <h3 className="text-center">{message}</h3>
       </div>
     )
   }
 
   render() {
-    const { edition, scene, goToScene, playGame } = this.props
+    const { edition, scene, goToScene, playStory } = this.props
 
     if (!edition) {
       return this.renderNotReady('Loading...one moment please.')
@@ -41,29 +31,25 @@ export default class StoryBook extends Component {
     }
 
     const summary = edition.summary
-    const push = this.props.history.push
-    const playAgain = () => playGame(edition.editionKey)
-    const goToLibrary = () => { push('/') }
-    const goToContact = () => { push('/contact') }
+    // const push = this.props.history.push
+    const playAgain = () => playStory(edition.editionKey)
+    // const goToLibrary = () => { push('/library') }
+    // const goToContact = () => { push('/contact') }
 
     return (
-      <div id="reader">
+      <div id="storybook">
         <h3 className="text-center">{summary.title}</h3>
         <h6 className="text-center"><em>by {summary.penName}</em></h6>
-        <div className="card">
-          <div className="card-header">
-            <h5 className="mb-0">{scene.title}</h5>
-          </div>
-          <div className="card-body">
+        <Card>
+          <CardHeader>{scene.title}</CardHeader>
+          <CardBody>
             <FormattedProse prose={scene.prose} />
-          </div>
-        </div>
+          </CardBody>
+        </Card>
         <Signpost
           scene={scene}
           goToScene={goToScene}
           playAgain={playAgain}
-          goToContact={goToContact}
-          goToLibrary={goToLibrary}
         />
       </div>
     )

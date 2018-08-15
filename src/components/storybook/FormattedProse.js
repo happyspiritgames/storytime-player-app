@@ -1,10 +1,11 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { format } from '../../util/formatter'
+import { CardText } from 'reactstrap'
+import { format } from '../../formatter'
 
 const FormattedProse = ({ prose }) => {
   return prose.split('\n').map((paragraph, index) =>
-    (<p className="card-text" key={index}>{ format(paragraph) }</p>)
+    (<CardText key={index}>{ format(paragraph) }</CardText>)
   )
 }
 

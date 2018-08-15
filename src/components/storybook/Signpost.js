@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import Sign from './Sign'
-import { sceneShape } from '../../datastore/dataShapes'
+import { sceneShape } from '../../metadata'
 
 const DEFAULT_PROMPT = 'What would you like to do?'
 const DEFAULT_ENDING_PROMPT = 'The End'
