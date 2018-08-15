@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 
-export default class Player extends Component {
+export default class PlayerPage extends Component {
   render() {
     return (
       <div>
