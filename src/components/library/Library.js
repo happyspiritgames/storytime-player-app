@@ -1,8 +1,6 @@
 import React, { Component } from 'react'
-import PropTypes from 'prop-types'
 import { inject, observer } from 'mobx-react'
 import { getPublishedEditions } from '../../api/readerApi'
-import { catalogShape, editionShape } from '../../metadata/dataShapes'
 import Catalog from './Catalog'
 
 @inject('EditionStore')
@@ -11,7 +9,7 @@ export default class Library extends Component {
   componentDidMount() {
     const { EditionStore } = this.props
     if (!EditionStore.editions || !EditionStore.editions.length) {
-      getPublishedEditions((editions) => EditionStore.setEditions(editions), 
+      getPublishedEditions((editions) => EditionStore.setEditions(editions),
         (error) => console.log(error))
     }
   }
