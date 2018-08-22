@@ -13,6 +13,11 @@ export default class CatalogCard extends Component {
 
   render() {
     const { edition, onPlay } = this.props
+
+    if (!edition) {
+      return null
+    }
+    
     const { editionKey, summary } = edition
     const { title, penName, tagLine, about } = summary
 

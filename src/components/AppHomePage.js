@@ -1,13 +1,26 @@
 import React, { Component } from 'react'
-import {
-  Container, Row, Col, Jumbotron, Button, Card, CardImg, CardBody, CardTitle,
-  CardSubtitle, CardText
-} from 'reactstrap'
+import { inject, observer } from 'mobx-react'
+import { Container, Row, Col, Jumbotron, Button } from 'reactstrap'
+import { getRecommendations } from '../api/readerApi'
 import { withRouter } from 'react-router-dom'
+import CatalogCard from './library/CatalogCard'
 
+@inject('EditionStore')
+@observer
 class AppHomePage extends Component {
+
+  componentDidMount() {
+    const { EditionStore } = this.props
+    if (!EditionStore.hasRecommendations) {
+      getRecommendations(
+        (editions) => EditionStore.recommendations = editions,
+        (error) => console.log(error)
+      )
+    }
+  }
+
   render() {
-    const { history } = this.props
+    const { history, EditionStore } = this.props
     const handleNavClick = (destination) => history.push(destination)
 
     return (
@@ -22,7 +35,7 @@ class AppHomePage extends Component {
                 <p>
                   <Button
                     tag="a"
-                    color="success"
+                    color="warning"
                     size="large"
                     onClick={() => handleNavClick('/library')}
                     target="_blank"
@@ -39,15 +52,12 @@ class AppHomePage extends Component {
             <Col>
               <section id="recommended">
                 <h2>Recommended</h2>
-                <Card>
-                  <CardImg top width="100%" src="./assets/treehouse-318x180.png" alt="Card image cap" />
-                  <CardBody>
-                    <CardTitle>The Mission</CardTitle>
-                    <CardSubtitle>by Bubba Gump</CardSubtitle>
-                    <CardText>Live the life of a 10-year-old who is sent on a dangerous mission to retrieve the golden bars. Will you make the right choices?</CardText>
-                    <Button>Play</Button>
-                  </CardBody>
-                </Card>
+              {EditionStore.hasRecommendations && 
+                <CatalogCard edition={EditionStore.topRecommendation} onPlay={() => {console.log('clicked play')}} />
+              }
+              {!EditionStore.hasRecommendations &&
+                <p>Please wait while we find something good...</p>
+              }
               </section>
             </Col>
             <Col>
