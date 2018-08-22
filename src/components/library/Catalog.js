@@ -33,11 +33,11 @@ export default class Catalog extends Component {
     )
   }
 
-  renderRow(editions) {
+  renderRow(editions, rowCount) {
     const cards = editions.map(edition => this.renderCard(edition.editionKey, edition.summary))
     // TODO find a way to separate rows verically without having to add extra row
     return (
-      <div>
+      <div key={rowCount}>
         <Row>
           {cards}
         </Row>
@@ -54,9 +54,11 @@ export default class Catalog extends Component {
       return null
     }
 
+    let rowCount = 0
+    let last = editions.length
     let next = 0
-    while (editions[next]) {
-      rows.push(this.renderRow(editions.slice(next, next + 3)))
+    while (next < last) {
+      rows.push(this.renderRow(editions.slice(next,  next + 3), rowCount++))
       next += 3
     }
     return (
