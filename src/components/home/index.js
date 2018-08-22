@@ -1,15 +1,16 @@
 import React, { Component } from 'react'
 import { inject, observer } from 'mobx-react'
 import { Container, Row, Col, Jumbotron, Button } from 'reactstrap'
-import { getRecommendations } from '../api/readerApi'
 import { withRouter } from 'react-router-dom'
-import CatalogCard from './library/CatalogCard'
+import { getRecommendations } from '../../api/readerApi'
+import Recommendations from './Recommendations'
 
 @inject('EditionStore')
 @observer
 class AppHomePage extends Component {
 
   componentDidMount() {
+    
     const { EditionStore } = this.props
     if (!EditionStore.hasRecommendations) {
       getRecommendations(
@@ -21,6 +22,8 @@ class AppHomePage extends Component {
 
   render() {
     const { history, EditionStore } = this.props
+    console.log(EditionStore)
+    
     const handleNavClick = (destination) => history.push(destination)
 
     return (
@@ -38,7 +41,6 @@ class AppHomePage extends Component {
                     color="warning"
                     size="large"
                     onClick={() => handleNavClick('/library')}
-                    target="_blank"
                   >
                     Enter the Library
                   </Button>
@@ -50,15 +52,7 @@ class AppHomePage extends Component {
         <Container>
           <Row>
             <Col>
-              <section id="recommended">
-                <h2>Recommended</h2>
-              {EditionStore.hasRecommendations && 
-                <CatalogCard edition={EditionStore.topRecommendation} onPlay={() => {console.log('clicked play')}} />
-              }
-              {!EditionStore.hasRecommendations &&
-                <p>Please wait while we find something good...</p>
-              }
-              </section>
+              <Recommendations />
             </Col>
             <Col>
               <section id="about">

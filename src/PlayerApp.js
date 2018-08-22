@@ -3,7 +3,7 @@ import { Route, Switch, BrowserRouter } from 'react-router-dom'
 import Footer from './components/Footer';
 import MainNavigation from './components/MainNavigation';
 import AccountPage from './components/AccountPage';
-import AppHomePage from './components/AppHomePage';
+import AppHomePage from './components/home';
 import HistoryPage from './components/HistoryPage';
 import LibraryPage from './components/library';
 import StoryBook from './components/storybook';

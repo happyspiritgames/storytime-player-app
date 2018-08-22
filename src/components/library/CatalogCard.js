@@ -1,25 +1,24 @@
 import React, { Component } from 'react'
-import PropTypes from 'prop-types'
+import { withRouter } from 'react-router-dom'
 import { 
   Card, CardBody, CardTitle, CardSubtitle, CardText, CardFooter, Button
 } from 'reactstrap'
 import { editionShape } from '../../metadata/dataShapes'
 
-export default class CatalogCard extends Component {
+class CatalogCard extends Component {
   static propTypes = {
-    edition: editionShape,
-    onPlay: PropTypes.func.isRequired
+    edition: editionShape
   }
 
   render() {
-    const { edition, onPlay } = this.props
-
+    const { edition, history } = this.props
     if (!edition) {
       return null
     }
     
     const { editionKey, summary } = edition
     const { title, penName, tagLine, about } = summary
+    const handlePlay = () => history.push(`/storybook/${editionKey}`)
 
     return (
       <Card key={editionKey}>
@@ -30,9 +29,11 @@ export default class CatalogCard extends Component {
           <CardText>{about}</CardText>
         </CardBody>
         <CardFooter>
-          <Button color="primary" onClick={ () => onPlay(editionKey) }>Play</Button>
+          <Button color="primary" onClick={handlePlay}>Play</Button>
         </CardFooter>
       </Card>
     )
   }
 }
+
+export default withRouter(CatalogCard)

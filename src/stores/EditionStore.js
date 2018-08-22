@@ -1,4 +1,4 @@
-import { observable } from 'mobx'
+import { observable, computed, action } from 'mobx'
 
 class EditionStore {
   @observable isLoaded = false
@@ -7,24 +7,22 @@ class EditionStore {
 
   // TODO figure out helpful ways to sort
 
-  get editions() {
+  @computed get editions() {
     return Object.values(this.editionsByKey)
   }
 
-  set editions(replacements) {
-    replacements.forEach(edition => {
-      this.editionsByKey[edition.editionKey] = edition
-    });
-    this.editions = replacements
+  @action loadEditions(replacements) {
+    replacements.forEach(toReplace => {
+      this.editionsByKey[toReplace.editionKey] = toReplace
+    })
     this.isLoaded = true
-    console.log('loaded %d editions', this.editions.length)
   }
 
-  get hasRecommendations() {
-    return this.editions && this.editions.length > 0
+  @computed get hasRecommendations() {
+    return this.recommended && this.recommended.length > 0
   }
 
-  get topRecommendation() {
+  @computed get topRecommendation() {
     if (this.hasRecommendations) {
       return this.editionsByKey[this.recommended[0]]
     } else {

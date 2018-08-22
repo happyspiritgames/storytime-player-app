@@ -6,12 +6,12 @@ import { editionShape } from '../../metadata/dataShapes'
 
 export default class Catalog extends Component {
   static propTypes = {
-    editions: PropTypes.arrayOf(editionShape),
-    onPlay: PropTypes.func.isRequired
+    editions: PropTypes.arrayOf(editionShape)
   }
 
   renderRow(editions, rowCount) {
-    const cards = editions.map(edition => <CatalogCard key={edition.editionKey} edition={edition} onPlay={this.props.onPlay} />)
+    const cards = editions.map(edition => 
+      <CatalogCard key={edition.editionKey} edition={edition} />)
 
     return (
       <div key={rowCount}>

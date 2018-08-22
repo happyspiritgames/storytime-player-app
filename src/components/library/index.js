@@ -1,18 +1,18 @@
 import React, { Component } from 'react'
 import { inject, observer } from 'mobx-react'
-import { withRouter } from 'react-router-dom'
 import { Container } from 'reactstrap'
 import { getPublishedEditions } from '../../api/readerApi'
 import Catalog from './Catalog'
 
 @inject('EditionStore')
 @observer
-class Library extends Component {
+export default class Library extends Component {
+
   componentDidMount() {
     const { EditionStore } = this.props
     if (!EditionStore.isLoaded) {
       getPublishedEditions(
-        (editions) => EditionStore.setEditions(editions),
+        (editions) => EditionStore.loadEditions(editions),
         (error) => console.log(error)
       )
     }
@@ -30,22 +30,19 @@ class Library extends Component {
   }
 
   render() {
-    const { history, EditionStore } = this.props
+    const { EditionStore } = this.props
+    console.log('edition store', EditionStore)
 
     if (!EditionStore.isLoaded) {
       return this.renderEmpty()
     }
     
-    const handlePlay = (editionKey) => history.push(`/storybook/${editionKey}`)
-
     return (
       <Container id="library">
         <h1>Welcome to the StoryTime Library.</h1>
         <h3>Find a story to play.</h3>
-        <Catalog key='catalog' editions={EditionStore.editions} onPlay={handlePlay} />
+        <Catalog key='catalog' editions={EditionStore.editions} />
       </Container>
     )
   }
 }
-
-export default withRouter(Library)
