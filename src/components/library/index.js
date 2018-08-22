@@ -10,9 +10,11 @@ import Catalog from './Catalog'
 class Library extends Component {
   componentDidMount() {
     const { EditionStore } = this.props
-    if (!EditionStore.editions || !EditionStore.editions.length) {
-      getPublishedEditions((editions) => EditionStore.setEditions(editions),
-        (error) => console.log(error))
+    if (!EditionStore.isLoaded) {
+      getPublishedEditions(
+        (editions) => EditionStore.setEditions(editions),
+        (error) => console.log(error)
+      )
     }
   }
 
@@ -30,18 +32,17 @@ class Library extends Component {
   render() {
     const { history, EditionStore } = this.props
 
-    const catalogEditions = EditionStore.editions
-    if (!catalogEditions.length) {
+    if (!EditionStore.isLoaded) {
       return this.renderEmpty()
     }
-
-    const play = (editionKey) => history.push(`/storybook/${editionKey}`)
+    
+    const handlePlay = (editionKey) => history.push(`/storybook/${editionKey}`)
 
     return (
       <Container id="library">
         <h1>Welcome to the StoryTime Library.</h1>
         <h3>Find a story to play.</h3>
-        <Catalog key='catalog' editions={catalogEditions} play={play} />
+        <Catalog key='catalog' editions={EditionStore.editions} onPlay={handlePlay} />
       </Container>
     )
   }

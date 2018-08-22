@@ -8,8 +8,9 @@ import {
   NavItem,
   NavLink
 } from 'reactstrap';
+import { withRouter } from 'react-router-dom'
 
-export default class MainNavigation extends Component {
+class MainNavigation extends Component {
   constructor(props) {
     super(props);
 
@@ -26,30 +27,33 @@ export default class MainNavigation extends Component {
   }
 
   render() {
+    const { history } = this.props
+
+    const handleNavClick = (destination) => history.push(destination)
+
     return (
       <Navbar color="inverse" light expand="md">
-        <NavbarBrand href="/">Happy Spirit Stories</NavbarBrand>
+        <NavbarBrand onClick={() => handleNavClick('/')}>Happy Spirit Stories</NavbarBrand>
         <NavbarToggler onClick={this.toggle} />
         <Collapse isOpen={this.state.isOpen} navbar>
           <Nav className="ml-auto" navbar>
             <NavItem>
-              <NavLink href="/library">Library</NavLink>
+              <NavLink onClick={() => handleNavClick('/library')}>Library</NavLink>
             </NavItem>
             <NavItem>
-              <NavLink href="/storybook">Story (hidden)</NavLink>
+              <NavLink onClick={() => handleNavClick('/history')}>History</NavLink>
             </NavItem>
             <NavItem>
-              <NavLink href="/history">History</NavLink>
+              <NavLink onClick={() => handleNavClick('/projects')}>Projects</NavLink>
             </NavItem>
             <NavItem>
-              <NavLink href="/projects">Projects</NavLink>
-            </NavItem>
-            <NavItem>
-              <NavLink href="/account">Account</NavLink>
+              <NavLink onClick={() => handleNavClick('/account')}>Account</NavLink>
             </NavItem>
           </Nav>
         </Collapse>
       </Navbar>
-    );
+    )
   }
 }
+
+export default withRouter(MainNavigation)

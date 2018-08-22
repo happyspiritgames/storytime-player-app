@@ -1,20 +1,15 @@
 import React, { Component } from 'react'
 import {
-  Container,
-  Row,
-  Col,
-  Jumbotron,
-  Button,
-  Card,
-  CardImg,
-  CardBody,
-  CardTitle,
-  CardSubtitle,
-  CardText
-} from 'reactstrap';
+  Container, Row, Col, Jumbotron, Button, Card, CardImg, CardBody, CardTitle,
+  CardSubtitle, CardText
+} from 'reactstrap'
+import { withRouter } from 'react-router-dom'
 
-export default class PlayerHomePage extends Component {
+class AppHomePage extends Component {
   render() {
+    const { history } = this.props
+    const handleNavClick = (destination) => history.push(destination)
+
     return (
       <div>
         <Jumbotron>
@@ -29,7 +24,7 @@ export default class PlayerHomePage extends Component {
                     tag="a"
                     color="success"
                     size="large"
-                    href="/library"
+                    onClick={() => handleNavClick('/library')}
                     target="_blank"
                   >
                     Enter the Library
@@ -68,3 +63,5 @@ export default class PlayerHomePage extends Component {
     )
   }
 }
+
+export default withRouter(AppHomePage)

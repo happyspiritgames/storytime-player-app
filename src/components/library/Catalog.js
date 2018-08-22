@@ -1,41 +1,18 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { 
-  CardDeck, Card, CardBody, CardTitle, CardSubtitle, CardText, CardFooter, Button, Row 
-} from 'reactstrap'
+import { CardDeck, Row } from 'reactstrap'
+import CatalogCard from './CatalogCard'
 import { editionShape } from '../../metadata/dataShapes'
 
 export default class Catalog extends Component {
   static propTypes = {
     editions: PropTypes.arrayOf(editionShape),
-    play: PropTypes.func.isRequired
-  }
-
-  renderCard(editionKey, summary) {
-    const { play } = this.props
-    const { title, penName, tagLine, about } = summary
-      /*
-        Put this under card, above card-body when story cover image is supported.
-        <img className="card-img-top w-100 d-block" alt={title} />
-      */
-    return (
-      <Card key={editionKey}>
-        <CardBody>
-          <CardTitle>{title}</CardTitle>
-          <CardSubtitle>by {penName}</CardSubtitle>
-          <CardText><em>{tagLine}</em></CardText>
-          <CardText>{about}</CardText>
-        </CardBody>
-        <CardFooter>
-          <Button color="primary" onClick={ () => play(editionKey) }>Play</Button>
-        </CardFooter>
-      </Card>
-    )
+    onPlay: PropTypes.func.isRequired
   }
 
   renderRow(editions, rowCount) {
-    const cards = editions.map(edition => this.renderCard(edition.editionKey, edition.summary))
-    // TODO find a way to separate rows verically without having to add extra row
+    const cards = editions.map(edition => <CatalogCard key={edition.editionKey} edition={edition} onPlay={this.props.onPlay} />)
+
     return (
       <div key={rowCount}>
         <Row>
