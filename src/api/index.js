@@ -1,31 +1,3 @@
-import readerApi from './readerApi'
-
-const loadEditions = (editionStore, uxStore) => {
-  uxStore.setMessage('Finding published stories. This should only take a second.')
-  readerApi.getPublishedEditions(
-    (editions) => {
-      editionStore.loadEditions(editions)
-      uxStore.clearMessage()
-    },
-    (error) => {
-      uxStore.setMessage('Unable to load stories. Sorry about that. Are you connected to the network? Maybe it\'s us.')
-      console.error(error)
-    }
-  )
-}
-
-const loadEdition = (editionStore, uxStore, editionKey) => {
-
-}
-
-const loadScene = (editionStore, uxStore, editionKey, sceneId) => {
-
-}
-
-const loadEditionScene = (editionStore, uxStore, editionKey, sceneId) => {
-  
-}
-
 const sampleEdition = {
   "editionKey": "2exsllwu-2",
   "storyId": "2exsllwu",

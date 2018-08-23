@@ -83,37 +83,33 @@ class EditionStore {
     return Object.values(this.editionsByKey)
   }
 
-  @action
-  loadRecommendations(recommendedEditions) {
-    this.recommended = []
-    recommendedEditions.forEach(edition => {
-      this.editionsByKey[edition.editionKey] = edition
-      this.recommended.push(edition.editionKey)
-    })
+  set activeEditionKey(keyIn) {
+    this.activeEditionKey = keyIn
+  }
+
+  set activeSceneId(idIn) {
+    this.activeSceneId = idIn
   }
 
   @action
-  loadEdition(edition) {
-    let scenes
-    if (this.editionsByKey[edition.editionKey] 
-        && this.editionsByKey[edition.editionKey].scenes) {
-      scenes = this.editionsByKey[edition.editionKey].scenes
-    }
-    this.editionsByKey[edition.editionKey] = edition
-    if (scenes) {
-      this.editionsByKey[edition.editionKey].scenes = scenes
-    }
+  clearActiveStory() {
+    this.activeEditionKey = undefined
+    this.activeSceneId = undefined
   }
 
   @action
-  loadScene(editionKey, scene) {
-    if (!this.editionsByKey[editionKey]) {
-      this.editionsByKey[editionKey] = {}
-    }
-    if (!this.editionsByKey[editionKey].scenes) {
-      this.editionsByKey[editionKey].scenes = {}
-    }
-    this.editionsByKey[editionKey].scenes[scene.sceneId] = scene
+  fetchActiveEdition() {
+    readerApi.getEdition(this.fetchActiveEditionSuccess, this.fetchActiveEditionError)
+  }
+
+  @action.bound
+  fetchActiveEditionSuccess(editionIn) {
+    this.editionsByKey[editionIn.editionKey] = editionIn
+  }
+
+  @action.bound
+  fetchActiveEditionError(error) {
+    console.error(error)
   }
 
   @computed
@@ -129,22 +125,6 @@ class EditionStore {
       return undefined
     }
   }
-
-  @computed
-  get hasActiveEdition() {
-    return this.activeEditionKey 
-      && this.editionsByKey[this.activeEditionKey] 
-      && this.editionsByKey[this.activeEditionKey].summary
-  }
-
-  @computed
-  get hasActiveScene() {
-    return this.activeEditionKey && this.activeSceneId
-      && this.editionsByKey[this.activeEditionKey] 
-      && this.editionsByKey[this.activeEditionKey].scenes
-      && this.editionsByKey[this.activeEditionKey].scenes[this.activeSceneId]
-  }
 }
-
 
 export default new EditionStore()

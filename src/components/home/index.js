@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-import { inject, observer } from 'mobx-react'
 import { Container, Row, Col, Jumbotron, Button } from 'reactstrap'
 import { withRouter, Link } from 'react-router-dom'
 import Recommendations from './Recommendations'
