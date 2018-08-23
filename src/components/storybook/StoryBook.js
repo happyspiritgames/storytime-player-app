@@ -2,15 +2,14 @@ import React, { Component } from 'react'
 import { inject, observer } from 'mobx-react'
 import Scene from './Scene'
 import Signpost from './Signpost'
-import { getEdition, getEditionScene } from '../../api/readerApi'
+import readerApi from '../../api/readerApi'
 
-@inject('EditionStore')
-@inject('UxStore')
+@inject('EditionStore', 'UxStore')
 @observer
 export default class StoryBook extends Component {
 
   componentWillMount() {
-    const { EditionStore, UxStore } = this.props
+    const { EditionStore } = this.props
     const { editionKey, sceneId } = this.props.match.params
 
     EditionStore.activeEditionKey = editionKey
@@ -21,13 +20,13 @@ export default class StoryBook extends Component {
     }
 
     if (!EditionStore.hasActiveEdition) {
-      getEdition(editionKey, 
+      readerApi.getEdition(editionKey, 
         (data) => EditionStore.loadEdition(data),
         (error) => handleError('failure loading edition', error)
       )
     }
     if (!EditionStore.hasActiveScene) {
-      getEditionScene(editionKey, 'u1pawmxp',
+      readerApi.getEditionScene(editionKey, 'u1pawmxp',
         (data) => EditionStore.loadScene(editionKey, data),
         (error) => handleError('failure', error)
       )
@@ -43,7 +42,7 @@ export default class StoryBook extends Component {
   }
 
   render() {
-    const { EditionStore, UiState } = this.props
+    const { EditionStore } = this.props
     const { hasActiveEdition, activeEdition, hasActiveScene, activeScene } = EditionStore
 
     if (!hasActiveEdition) {

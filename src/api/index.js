@@ -1,31 +1,32 @@
-import * as readerApi from './readerApi'
+import readerApi from './readerApi'
 
-export const loadEditions = (editionStore, uxStore) => {
+const loadEditions = (editionStore, uxStore) => {
+  uxStore.setMessage('Finding published stories. This should only take a second.')
   readerApi.getPublishedEditions(
     (editions) => {
       editionStore.loadEditions(editions)
       uxStore.clearMessage()
     },
     (error) => {
-      uxStore.message = 'Unable to load stories'
+      uxStore.setMessage('Unable to load stories. Sorry about that. Are you connected to the network? Maybe it\'s us.')
       console.error(error)
     }
   )
 }
 
-export const loadEdition = (editionStore, uxStore, editionKey) => {
+const loadEdition = (editionStore, uxStore, editionKey) => {
 
 }
 
-export const loadScene = (editionStore, uxStore, editionKey, sceneId) => {
+const loadScene = (editionStore, uxStore, editionKey, sceneId) => {
 
 }
 
-export const loadEditionScene = (editionStore, uxStore, editionKey, sceneId) => {
+const loadEditionScene = (editionStore, uxStore, editionKey, sceneId) => {
   
 }
 
-export const sampleEdition = {
+const sampleEdition = {
   "editionKey": "2exsllwu-2",
   "storyId": "2exsllwu",
   "version": "2",
@@ -44,7 +45,7 @@ export const sampleEdition = {
   ]
 }
 
-export const sampleScene = {
+const sampleScene = {
   "sceneId": "u1pawmxp",
   "title": "Your Mission",
   "prose": "You are 10 years old.  You are no ordinary 10-year-old.  You are a trusted agent of an elite spy network, and you are on a mission to recover the Golden Bars from a high-security warehouse in a location that you know only too well.  The Supreme Commander has equipped you with a handful of coins and notes that are used by the locals of this region to exchange for valuables.  Your mission is to enter the warehouse, locate the Golden Bars, bribe the security guard, and return to Headquarters.\nShould you be captured in pursuit of your mission, there is no telling what foul consequences await you.  It is best not to be seen.  Your knack for blending in and ability to disappear in a whisper are, without a doubt, why you were chosen for this mission.\nAs you dismount the stairs that lead from Headquarters to the main street, you face your first decision.  Should you head down the street toward your objective or sneak around to the back and take the Forgotten Trail?",
@@ -59,4 +60,8 @@ export const sampleScene = {
       "teaser": "Play it cool, and walk directly toward the location where the Golden Bars were last spotted."
     }
   ]
+}
+
+export default {
+  loadEditions, loadEdition, loadScene, loadEditionScene, sampleEdition, sampleScene
 }

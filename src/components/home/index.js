@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { inject, observer } from 'mobx-react'
 import { Container, Row, Col, Jumbotron, Button } from 'reactstrap'
 import { withRouter } from 'react-router-dom'
-import { getRecommendations } from '../../api/readerApi'
+import readerApi from '../../api/readerApi'
 import Recommendations from './Recommendations'
 
 @inject('EditionStore')
@@ -13,7 +13,7 @@ class AppHomePage extends Component {
     
     const { EditionStore } = this.props
     if (!EditionStore.hasRecommendations) {
-      getRecommendations(
+      readerApi.getRecommendations(
         (editions) => EditionStore.loadRecommendations(editions),
         (error) => console.log(error)
       )
