@@ -8,7 +8,6 @@ import Catalog from './Catalog'
 export default class Library extends Component {
 
   componentDidMount() {
-    console.log('Library.componentDidMount')
     const { EditionStore } = this.props
     if (!EditionStore.hasFetchedEditions) {
       EditionStore.fetchEditions()

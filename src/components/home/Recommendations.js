@@ -5,6 +5,13 @@ import CatalogCard from '../library/CatalogCard'
 @inject('EditionStore')
 @observer
 export default class Recommendations extends Component {
+  componentDidMount() {
+    const { EditionStore } = this.props
+    if (!EditionStore.hasFetchedRecommendations) {
+      EditionStore.fetchRecommendations()
+    }
+  }
+
   render() {
     const { EditionStore } = this.props
     if (!EditionStore.hasRecommendations) {

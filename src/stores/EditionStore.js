@@ -2,53 +2,39 @@ import { observable, computed, action } from 'mobx'
 import readerApi from '../api/readerApi'
 
 class EditionStore {
+  @observable lastFetchedRecommendationsAt = null
   @observable lastFetchedEditionsAt = null
+  @observable recommended = []  // array of edition keys
   @observable status = 'ready'
   @observable editionsByKey = {}  // for easy lookup, prevent storing duplicates
-  @observable recommended = []  // array of edition keys
   @observable activeEditionKey = null
   @observable activeSceneId = null
 
   @computed
-  get hasFetchedEditions() {
-    return !!this.lastFetchedEditionsAt
-  }
-
-  @computed
-  get editions() {
-    return Object.values(this.editionsByKey)
+  get hasFetchedRecommendations() {
+    return !!this.lastFetchedRecommendationsAt
   }
 
   @action
-  fetchEditions() {
-    console.log('fetchEditions')
-    this.status = 'fetching'
-    readerApi.getPublishedEditions(this.fetchEditionsSuccess, this.fetchEditionsError)
+  fetchRecommendations() {
+    readerApi.getRecommendations(this.fetchRecommendationsSuccess, this.fetchRecommendationsError)
   }
 
   @action.bound
-  fetchEditionsSuccess(editionsIn) {
-    console.log('fetchEditionsSuccess')
-    this.status = 'ready'
-    this.lastFetchedEditionsAt = Date.now()
-    this.editionsByKey = {}
-    editionsIn.forEach(toAdd => {
+  fetchRecommendationsSuccess(recommendedIn) {
+    this.recommended = []
+    recommendedIn.forEach(toAdd => {
       this.editionsByKey[toAdd.editionKey] = toAdd
+      this.recommended.push(toAdd.editionKey)
     })
+    this.status = 'ready'
+    this.lastFetchedRecommendationsAt = Date.now()
   }
 
   @action.bound
-  fetchEditionsError(error) {
-    console.log('fetchEditionsError')
+  fetchRecommendationsError(error) {
     console.error(error)
     this.status = 'ready'
-  }
-
-  @action
-  loadEditions(replacements) {
-    replacements.forEach(toReplace => {
-      this.editionsByKey[toReplace.editionKey] = toReplace
-    })
   }
 
   @computed
@@ -63,6 +49,38 @@ class EditionStore {
     } else {
       return null
     }
+  }
+
+  @computed
+  get hasFetchedEditions() {
+    return !!this.lastFetchedEditionsAt
+  }
+
+  @action
+  fetchEditions() {
+    this.status = 'fetching'
+    readerApi.getPublishedEditions(this.fetchEditionsSuccess, this.fetchEditionsError)
+  }
+
+  @action.bound
+  fetchEditionsSuccess(editionsIn) {
+    this.editionsByKey = {}
+    editionsIn.forEach(toAdd => {
+      this.editionsByKey[toAdd.editionKey] = toAdd
+    })
+    this.status = 'ready'
+    this.lastFetchedEditionsAt = Date.now()
+  }
+
+  @action.bound
+  fetchEditionsError(error) {
+    console.error(error)
+    this.status = 'ready'
+  }
+
+  @computed
+  get editions() {
+    return Object.values(this.editionsByKey)
   }
 
   @action
