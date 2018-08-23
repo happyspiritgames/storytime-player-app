@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { inject, observer } from 'mobx-react'
 import { Container } from 'reactstrap'
-import action from '../../api'
+import * as action from '../../api'
 import Catalog from './Catalog'
 
 @inject('EditionStore')
@@ -11,7 +11,7 @@ export default class Library extends Component {
 
   componentDidMount() {
     const { EditionStore, UxStore } = this.props
-    if (!EditionStore.isLoaded) {
+    if (!EditionStore.editions.length) {
       action.loadEditions(EditionStore, UxStore)
     }
   }
@@ -31,16 +31,18 @@ export default class Library extends Component {
     const { EditionStore, UxStore } = this.props
     console.log('edition store', EditionStore)
 
-    if (!EditionStore.isLoaded) {
+    if (!EditionStore.editions.length) {
       return this.renderEmpty()
     }
     
+    const userMessage = (UxStore.message) ? <p>{UxStore.message}</p> : undefined
     if (UxStore.message)
     
     return (
       <Container id="library">
         <h1>Welcome to the StoryTime Library.</h1>
         <h3>Find a story to play.</h3>
+        {userMessage}
         <Catalog key='catalog' editions={EditionStore.editions} />
       </Container>
     )

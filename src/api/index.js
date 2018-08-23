@@ -1,17 +1,31 @@
-import readerApi from './readerApi'
+import * as readerApi from './readerApi'
 
-module.exports.loadEditions = (editionStore, uxStore) => {
+export const loadEditions = (editionStore, uxStore) => {
   readerApi.getPublishedEditions(
     (editions) => {
       editionStore.loadEditions(editions)
-      uxStore.message = ''
+      uxStore.clearMessage()
     },
-    (error) => uxStore.message = 'Unable to load stories'
+    (error) => {
+      uxStore.message = 'Unable to load stories'
+      console.error(error)
+    }
   )
 }
 
+export const loadEdition = (editionStore, uxStore, editionKey) => {
 
-module.exports.sampleEdition = {
+}
+
+export const loadScene = (editionStore, uxStore, editionKey, sceneId) => {
+
+}
+
+export const loadEditionScene = (editionStore, uxStore, editionKey, sceneId) => {
+  
+}
+
+export const sampleEdition = {
   "editionKey": "2exsllwu-2",
   "storyId": "2exsllwu",
   "version": "2",
@@ -30,7 +44,7 @@ module.exports.sampleEdition = {
   ]
 }
 
-module.exports.sampleScene = {
+export const sampleScene = {
   "sceneId": "u1pawmxp",
   "title": "Your Mission",
   "prose": "You are 10 years old.  You are no ordinary 10-year-old.  You are a trusted agent of an elite spy network, and you are on a mission to recover the Golden Bars from a high-security warehouse in a location that you know only too well.  The Supreme Commander has equipped you with a handful of coins and notes that are used by the locals of this region to exchange for valuables.  Your mission is to enter the warehouse, locate the Golden Bars, bribe the security guard, and return to Headquarters.\nShould you be captured in pursuit of your mission, there is no telling what foul consequences await you.  It is best not to be seen.  Your knack for blending in and ability to disappear in a whisper are, without a doubt, why you were chosen for this mission.\nAs you dismount the stairs that lead from Headquarters to the main street, you face your first decision.  Should you head down the street toward your objective or sneak around to the back and take the Forgotten Trail?",

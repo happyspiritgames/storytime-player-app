@@ -1,7 +1,6 @@
 import { observable, computed, action } from 'mobx'
 
 class EditionStore {
-  @observable isLoaded = false
   @observable editionsByKey = {}  // for easy lookup, prevent storing duplicates
   @observable recommended = []  // array of edition keys
   @observable activeEditionKey = null
@@ -14,7 +13,11 @@ class EditionStore {
   }
 
   @computed get activeScene() {
-    return this.activeEdition.scenes[activeSceneId]
+    if (this.activeEdition && this.activeEdition.scenes) {
+      return this.activeEdition.scenes[this.activeSceneId]
+    } else {
+      return undefined
+    }
   }
 
   @computed get hasActiveEdition() {
@@ -53,7 +56,7 @@ class EditionStore {
     }
   }
 
-  set recommendations(recommendedEditions) {
+  @action loadRecommendations(recommendedEditions) {
     this.recommended = []
     recommendedEditions.forEach(edition => {
       this.editionsByKey[edition.editionKey] = edition

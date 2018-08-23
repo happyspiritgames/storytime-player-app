@@ -14,7 +14,7 @@ class AppHomePage extends Component {
     const { EditionStore } = this.props
     if (!EditionStore.hasRecommendations) {
       getRecommendations(
-        (editions) => EditionStore.recommendations = editions,
+        (editions) => EditionStore.loadRecommendations(editions),
         (error) => console.log(error)
       )
     }

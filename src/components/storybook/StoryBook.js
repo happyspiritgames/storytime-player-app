@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { inject, observer } from 'mobx-react'
+import Scene from './Scene'
 import Signpost from './Signpost'
 import { getEdition, getEditionScene } from '../../api/readerApi'
 
