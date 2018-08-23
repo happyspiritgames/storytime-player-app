@@ -1,20 +1,18 @@
 import React, { Component } from 'react'
 import { inject, observer } from 'mobx-react'
 import { Container } from 'reactstrap'
-import { getPublishedEditions } from '../../api/readerApi'
+import action from '../../api'
 import Catalog from './Catalog'
 
 @inject('EditionStore')
+@inject('UxStore')
 @observer
 export default class Library extends Component {
 
   componentDidMount() {
-    const { EditionStore } = this.props
+    const { EditionStore, UxStore } = this.props
     if (!EditionStore.isLoaded) {
-      getPublishedEditions(
-        (editions) => EditionStore.loadEditions(editions),
-        (error) => console.log(error)
-      )
+      action.loadEditions(EditionStore, UxStore)
     }
   }
 
@@ -30,12 +28,14 @@ export default class Library extends Component {
   }
 
   render() {
-    const { EditionStore } = this.props
+    const { EditionStore, UxStore } = this.props
     console.log('edition store', EditionStore)
 
     if (!EditionStore.isLoaded) {
       return this.renderEmpty()
     }
+    
+    if (UxStore.message)
     
     return (
       <Container id="library">

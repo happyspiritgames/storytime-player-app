@@ -2,10 +2,33 @@ import { observable, computed, action } from 'mobx'
 
 class EditionStore {
   @observable isLoaded = false
-  @observable editionsByKey = {}
-  @observable recommended = []
+  @observable editionsByKey = {}  // for easy lookup, prevent storing duplicates
+  @observable recommended = []  // array of edition keys
+  @observable activeEditionKey = null
+  @observable activeSceneId = null
 
   // TODO figure out helpful ways to sort
+
+  @computed get activeEdition() {
+    return this.editionsByKey[this.activeEditionKey]
+  }
+
+  @computed get activeScene() {
+    return this.activeEdition.scenes[activeSceneId]
+  }
+
+  @computed get hasActiveEdition() {
+    return this.activeEditionKey 
+      && this.editionsByKey[this.activeEditionKey] 
+      && this.editionsByKey[this.activeEditionKey].summary
+  }
+
+  @computed get hasActiveScene() {
+    return this.activeEditionKey && this.activeSceneId
+      && this.editionsByKey[this.activeEditionKey] 
+      && this.editionsByKey[this.activeEditionKey].scenes
+      && this.editionsByKey[this.activeEditionKey].scenes[this.activeSceneId]
+  }
 
   @computed get editions() {
     return Object.values(this.editionsByKey)
@@ -36,6 +59,28 @@ class EditionStore {
       this.editionsByKey[edition.editionKey] = edition
       this.recommended.push(edition.editionKey)
     })
+  }
+
+  @action loadEdition(edition) {
+    let scenes
+    if (this.editionsByKey[edition.editionKey] 
+        && this.editionsByKey[edition.editionKey].scenes) {
+      scenes = this.editionsByKey[edition.editionKey].scenes
+    }
+    this.editionsByKey[edition.editionKey] = edition
+    if (scenes) {
+      this.editionsByKey[edition.editionKey].scenes = scenes
+    }
+  }
+
+  @action loadScene(editionKey, scene) {
+    if (!this.editionsByKey[editionKey]) {
+      this.editionsByKey[editionKey] = {}
+    }
+    if (!this.editionsByKey[editionKey].scenes) {
+      this.editionsByKey[editionKey].scenes = {}
+    }
+    this.editionsByKey[editionKey].scenes[scene.sceneId] = scene
   }
 }
 

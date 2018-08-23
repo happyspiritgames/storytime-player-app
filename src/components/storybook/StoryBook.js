@@ -1,33 +1,36 @@
 import React, { Component } from 'react'
-import PropTypes from 'prop-types'
-import { Card, CardHeader, CardBody } from 'reactstrap'
-import FormattedProse from './FormattedProse'
+import { inject, observer } from 'mobx-react'
 import Signpost from './Signpost'
-import { sceneShape, editionShape } from '../../metadata'
 import { getEdition, getEditionScene } from '../../api/readerApi'
 
+@inject('EditionStore')
+@inject('UxStore')
+@observer
 export default class StoryBook extends Component {
-  static propTypes = {
-    edition: editionShape,
-    scene: sceneShape,
-    playStory: PropTypes.func.isRequired,
-    goToScene: PropTypes.func.isRequired
-  }
 
   componentWillMount() {
-    const handleCallback = (label, data) => {
-      console.log(label, data)
+    const { EditionStore, UxStore } = this.props
+    const { editionKey, sceneId } = this.props.match.params
+
+    EditionStore.activeEditionKey = editionKey
+    EditionStore.activeSceneId = sceneId
+
+    const handleError = (label, error) => {
+      console.error(label, error)
     }
 
-    getEdition('2exsllwu-2', 
-      (data) => handleCallback('success', data),
-      (error) => handleCallback('failure', error)
-    )
-    
-    getEditionScene('2exsllwu-2', 'u1pawmxp',
-      (data) => handleCallback('success', data),
-      (error) => handleCallback('failure', error)
-    )
+    if (!EditionStore.hasActiveEdition) {
+      getEdition(editionKey, 
+        (data) => EditionStore.loadEdition(data),
+        (error) => handleError('failure loading edition', error)
+      )
+    }
+    if (!EditionStore.hasActiveScene) {
+      getEditionScene(editionKey, 'u1pawmxp',
+        (data) => EditionStore.loadScene(editionKey, data),
+        (error) => handleError('failure', error)
+      )
+    }
   }
 
   renderNotReady(message) {
@@ -39,35 +42,22 @@ export default class StoryBook extends Component {
   }
 
   render() {
-    const { edition, scene, goToScene, playStory } = this.props
+    const { EditionStore, UiState } = this.props
+    const { hasActiveEdition, activeEdition, hasActiveScene, activeScene } = EditionStore
 
-    if (!edition) {
+    if (!hasActiveEdition) {
       return this.renderNotReady('Loading...one moment please.')
-    } else if (!scene) {
+    } else if (!hasActiveScene) {
       return this.renderNotReady('Please wait while we set the scene...this should only take a second or two.')
     }
 
-    const summary = edition.summary
-    // const push = this.props.history.push
-    const playAgain = () => playStory(edition.editionKey)
-    // const goToLibrary = () => { push('/library') }
-    // const goToContact = () => { push('/contact') }
-
+    const summary = activeEdition.summary
     return (
       <div id="storybook">
         <h3 className="text-center">{summary.title}</h3>
         <h6 className="text-center"><em>by {summary.penName}</em></h6>
-        <Card>
-          <CardHeader>{scene.title}</CardHeader>
-          <CardBody>
-            <FormattedProse prose={scene.prose} />
-          </CardBody>
-        </Card>
-        <Signpost
-          scene={scene}
-          goToScene={goToScene}
-          playAgain={playAgain}
-        />
+        <Scene scene={activeScene} />
+        <Signpost scene={activeScene} />
       </div>
     )
   }
