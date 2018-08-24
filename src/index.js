@@ -1,18 +1,27 @@
-import React from 'react';
-import { configure } from 'mobx';
-import ReactDOM from 'react-dom';
-import { Provider } from 'mobx-react';
-import EditionStore from './stores/EditionStore';
-import UxStore from './stores/UxStore';
-import 'bootstrap/dist/css/bootstrap.css';
-import './index.css';
-import PlayerApp from './PlayerApp';
+import React from 'react'
+import ReactDOM from 'react-dom'
+import { BrowserRouter } from 'react-router-dom'
+import { useStrict } from 'mobx'
+import { Provider } from 'mobx-react'
+import editionStore from './stores/editionStore'
+import viewerStore from './stores/viewerStore'
+import uxStore from './stores/uxStore'
+import 'bootstrap/dist/css/bootstrap.css'
+import './index.css'
+import PlayerApp from './PlayerApp'
 
-configure({ enforceActions: true })
+const stores = {
+  editionStore,
+  viewerStore,
+  uxStore
+}
 
-const Root = (
-  <Provider EditionStore={EditionStore} UxStore={UxStore}>
-    <PlayerApp />
+useStrict(true);
+
+ReactDOM.render((
+  <Provider {...stores}>
+    <BrowserRouter>
+      <PlayerApp />
+    </BrowserRouter>
   </Provider>
-)
-ReactDOM.render(Root, document.getElementById('root'));
+), document.getElementById('root'))

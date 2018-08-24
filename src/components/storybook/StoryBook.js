@@ -4,27 +4,32 @@ import Scene from './Scene'
 import Signpost from './Signpost'
 import readerApi from '../../api/readerApi'
 
-@inject('EditionStore', 'UxStore')
+@inject('EditionStore')
 @observer
 export default class StoryBook extends Component {
 
   componentWillMount() {
-    const { EditionStore } = this.props
-    const { editionKey, sceneId } = this.props.match.params
+    const { EditionStore, match } = this.props
+    const { editionKey } = match.params
+
+    if (!editionKey) {
+      console.log('Not sure what to load; no edition key')
+      return
+    }
 
     EditionStore.activeEditionKey = editionKey
-    EditionStore.activeSceneId = sceneId
+    EditionStore.prepScene(editionKey)
+
+    ///// FIXME pick up here
 
     const handleError = (label, error) => {
       console.error(label, error)
     }
 
-    if (!EditionStore.hasActiveEdition) {
-      readerApi.getEdition(editionKey, 
-        (data) => EditionStore.loadEdition(data),
-        (error) => handleError('failure loading edition', error)
-      )
+    if (editionKey && !EditionStore.hasActiveEdition) {
+      EditionStore.fetchActiveEdition()
     }
+
     if (!EditionStore.hasActiveScene) {
       readerApi.getEditionScene(editionKey, 'u1pawmxp',
         (data) => EditionStore.loadScene(editionKey, data),

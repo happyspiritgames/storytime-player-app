@@ -7,9 +7,7 @@ class EditionStore {
   @observable recommended = []  // array of edition keys
   @observable status = 'ready'
   @observable editionsByKey = {}  // for easy lookup, prevent storing duplicates
-  @observable activeEditionKey = null
-  @observable activeSceneId = null
-
+  
   @computed
   get hasFetchedRecommendations() {
     return !!this.lastFetchedRecommendationsAt
@@ -84,10 +82,12 @@ class EditionStore {
   }
 
   set activeEditionKey(keyIn) {
+    console.log('set active edition:', keyIn)
     this.activeEditionKey = keyIn
   }
 
   set activeSceneId(idIn) {
+    console.log('set active scene:', idIn)
     this.activeSceneId = idIn
   }
 
@@ -95,6 +95,15 @@ class EditionStore {
   clearActiveStory() {
     this.activeEditionKey = undefined
     this.activeSceneId = undefined
+  }
+
+  @computed
+  get hasActiveEdition() {
+    if (!this.activeEditionKey) {
+      console.log('no active edition key found')
+      return false
+    }
+    return !!this.editionsByKey[this.activeEditionKey]
   }
 
   @action
@@ -125,6 +134,12 @@ class EditionStore {
       return undefined
     }
   }
+
+  @action
+  prepActiveScene() {
+
+  }
 }
+
 
 export default new EditionStore()

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import { Route, Switch, BrowserRouter } from 'react-router-dom'
+import { Route, Switch } from 'react-router-dom'
 import Footer from './components/Footer';
-import MainNavigation from './components/MainNavigation';
+import Header from './components/Header';
 import AccountPage from './components/AccountPage';
 import AppHomePage from './components/home';
 import HistoryPage from './components/HistoryPage';
@@ -13,20 +13,19 @@ import './PlayerApp.css';
 class PlayerApp extends Component {
   render() {
     return (
-      <BrowserRouter>
-        <div>
-          <MainNavigation />
-          <Switch>
-            <Route exact path="/" component={AppHomePage} />
-            <Route path="/library" component={LibraryPage} />
-            <Route path="/storybook" component={StoryBook} />
-            <Route path="/history" component={HistoryPage} />
-            <Route path="/projects" component={ProjectsPage} />
-            <Route path="/account" component={AccountPage} />
-          </Switch>
-          <Footer />
-        </div>
-      </BrowserRouter>
+      <div>
+        <Header />
+        <Switch>
+          <Route path="/library" component={LibraryPage} />
+          <Route path="/storybook/:key" component={StoryBook} />
+          <Route path="/storybook" component={StoryBook} />
+          <Route path="/history" component={HistoryPage} />
+          <Route path="/projects" component={ProjectsPage} />
+          <Route path="/account" component={AccountPage} />
+          <Route path="/" component={AppHomePage} />
+        </Switch>
+        <Footer />
+      </div>
     );
   }
 }

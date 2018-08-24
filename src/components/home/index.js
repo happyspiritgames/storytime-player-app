@@ -37,8 +37,9 @@ class AppHomePage extends Component {
             <Col>
               <section id="about">
                 <h2>About</h2>
-                <p>Happy Spirit Stories is great place to <Link to='/library'>find interest stories</Link> with multiple possible outcomes. You can play story-games, and you can <Link to="/projects">write and share your own.</Link></p>
-                <p>Everything here is free. Also, we are not going to bother you with ads. Enjoy, and share us with your friends!</p>
+                <p>Happy Spirit Stories is great place to <Link to='/library'>find interesting stories</Link> with multiple possible endings. After you play a few, you might want to <Link to="/projects">write and share your own.</Link></p>
+                <p>Everything here is free. And we are not going to bother you with ads. Enjoy!</p>
+                <p>Share us with your friends.</p>
               </section>
             </Col>
           </Row>
