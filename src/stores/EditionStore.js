@@ -2,15 +2,21 @@ import { observable, computed, action } from 'mobx'
 import readerApi from '../api/readerApi'
 
 class EditionStore {
+  @observable isLoading = false
   @observable lastFetchedRecommendationsAt = null
   @observable lastFetchedEditionsAt = null
   @observable recommended = []  // array of edition keys
   @observable status = 'ready'
   @observable editionsByKey = {}  // for easy lookup, prevent storing duplicates
-  
+
   @computed
   get hasFetchedRecommendations() {
     return !!this.lastFetchedRecommendationsAt
+  }
+
+  @action loadRecommendations() {
+    this.isLoading = true
+    return 
   }
 
   @action

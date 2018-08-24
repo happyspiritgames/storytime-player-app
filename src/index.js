@@ -1,7 +1,7 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import { BrowserRouter } from 'react-router-dom'
-import { useStrict } from 'mobx'
+import { configure } from 'mobx'
 import { Provider } from 'mobx-react'
 import editionStore from './stores/editionStore'
 import viewerStore from './stores/viewerStore'
@@ -16,7 +16,7 @@ const stores = {
   uxStore
 }
 
-useStrict(true);
+configure({ enforceActions: true })
 
 ReactDOM.render((
   <Provider {...stores}>
