@@ -7,22 +7,27 @@ import CatalogCard from '../library/CatalogCard'
 export default class Recommendations extends Component {
   componentDidMount() {
     const { editionStore } = this.props
-    if (!editionStore.hasFetchedRecommendations) {
-      editionStore.fetchRecommendations()
+    if (!editionStore.hasRecommendations) {
+      editionStore.loadRecommendations()
     }
   }
 
   render() {
     const { editionStore } = this.props
+    let message
     if (!editionStore.hasRecommendations) {
-      return null
-    } else {
-      return (
-        <section id="recommended">
-          <h2>Recommended</h2>
-          <CatalogCard edition={editionStore.topRecommendation} />
-        </section>
-      )
+      if (editionStore.isLoading) {
+        message = <p>Looking for something you will like.</p>
+      } else {
+        message = <p>I guess you will have to check out the library.</p>
+      }
     }
+    return (
+      <section id="recommended">
+        <h2>Recommended</h2>
+        {message}
+        <CatalogCard edition={editionStore.topRecommendation} />
+      </section>
+    )
   }
 }

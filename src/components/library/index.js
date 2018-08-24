@@ -3,18 +3,18 @@ import { inject, observer } from 'mobx-react'
 import { Container } from 'reactstrap'
 import Catalog from './Catalog'
 
-@inject('EditionStore')
+@inject('editionStore')
 @observer
 export default class Library extends Component {
 
   componentDidMount() {
-    const { EditionStore } = this.props
-    if (!EditionStore.hasFetchedEditions) {
-      EditionStore.fetchEditions()
+    const { editionStore } = this.props
+    if (!editionStore.editionsAreLoaded) {
+      editionStore.loadEditions()
     }
   }
 
-  renderFetching() {
+  renderLoading() {
     return (
       <Container id="library">
         <h1>Welcome to the StoryTime Library.</h1>
@@ -26,17 +26,15 @@ export default class Library extends Component {
   }
 
   render() {
-    const { EditionStore } = this.props
+    const { editionStore } = this.props
+    const content = editionStore.editionsAreLoaded
+      ? <Catalog key='catalog' editions={editionStore.editions} />
+      : this.renderLoading()
 
-    if (!EditionStore.hasFetchedEditions) {
-      return this.renderFetching()
-    }
-    
     return (
       <Container id="library">
         <h1>Welcome to the StoryTime Library.</h1>
-        <h3>Find a story to play.</h3>
-        <Catalog key='catalog' editions={EditionStore.editions} />
+        {content}
       </Container>
     )
   }

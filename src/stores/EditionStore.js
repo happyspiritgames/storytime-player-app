@@ -1,91 +1,69 @@
 import { observable, computed, action } from 'mobx'
 import readerApi from '../api/readerApi'
+import api from '../api'
 
 class EditionStore {
   @observable isLoading = false
   @observable lastFetchedRecommendationsAt = null
   @observable lastFetchedEditionsAt = null
-  @observable recommended = []  // array of edition keys
-  @observable status = 'ready'
-  @observable editionsByKey = {}  // for easy lookup, prevent storing duplicates
-
-  @computed
-  get hasFetchedRecommendations() {
-    return !!this.lastFetchedRecommendationsAt
-  }
+  @observable recommended = []
+  @observable editionMap = observable.map()
 
   @action loadRecommendations() {
     this.isLoading = true
-    return 
-  }
-
-  @action
-  fetchRecommendations() {
-    readerApi.getRecommendations(this.fetchRecommendationsSuccess, this.fetchRecommendationsError)
-  }
-
-  @action.bound
-  fetchRecommendationsSuccess(recommendedIn) {
-    this.recommended = []
-    recommendedIn.forEach(toAdd => {
-      this.editionsByKey[toAdd.editionKey] = toAdd
-      this.recommended.push(toAdd.editionKey)
-    })
-    this.status = 'ready'
-    this.lastFetchedRecommendationsAt = Date.now()
-  }
-
-  @action.bound
-  fetchRecommendationsError(error) {
-    console.error(error)
-    this.status = 'ready'
+    return api.Stories.recommendations()
+      .then(action(recommendations => {
+        this.recommended = []
+        recommendations.forEach(recommendation => {
+          this.editionMap.set(recommendation.editionKey, recommendation)
+          this.recommended.push(recommendation.editionKey)
+        })
+        this.lastFetchedRecommendationsAt = Date.now()
+      }))
+      .finally(action(() => { this.isLoading = false }))
   }
 
   @computed
   get hasRecommendations() {
-    return this.recommended && this.recommended.length > 0
+    return this.lastFetchedRecommendationsAt
+      && this.recommended
+      && this.recommended.length > 0
   }
 
   @computed
   get topRecommendation() {
     if (this.hasRecommendations) {
-      return this.editionsByKey[this.recommended[0]]
+      return this.editionMap.get(this.recommended[0])
     } else {
       return null
     }
   }
 
-  @computed
-  get hasFetchedEditions() {
-    return !!this.lastFetchedEditionsAt
-  }
-
   @action
-  fetchEditions() {
-    this.status = 'fetching'
-    readerApi.getPublishedEditions(this.fetchEditionsSuccess, this.fetchEditionsError)
+  loadEditions() {
+    this.isLoading = true
+    return api.Stories.all()
+      .then(action(covers => {
+        this.recommended = []
+        covers.forEach(edition => this.editionMap.set(edition.editionKey, edition))
+        this.lastFetchedEditionsAt = Date.now()
+      }))
+      .finally(action(() => { this.isLoading = false }))
   }
 
-  @action.bound
-  fetchEditionsSuccess(editionsIn) {
-    this.editionsByKey = {}
-    editionsIn.forEach(toAdd => {
-      this.editionsByKey[toAdd.editionKey] = toAdd
-    })
-    this.status = 'ready'
-    this.lastFetchedEditionsAt = Date.now()
-  }
-
-  @action.bound
-  fetchEditionsError(error) {
-    console.error(error)
-    this.status = 'ready'
+  @computed
+  get editionsAreLoaded() {
+    return !!this.lastFetchedEditionsAt
   }
 
   @computed
   get editions() {
-    return Object.values(this.editionsByKey)
+    const out = []
+    this.editionMap.forEach(edition => {out.push(edition)})
+    return out
   }
+
+  // FIXME below here vvvvv
 
   set activeEditionKey(keyIn) {
     console.log('set active edition:', keyIn)
@@ -109,7 +87,7 @@ class EditionStore {
       console.log('no active edition key found')
       return false
     }
-    return !!this.editionsByKey[this.activeEditionKey]
+    return !!this.editionMap[this.activeEditionKey]
   }
 
   @action
@@ -119,7 +97,7 @@ class EditionStore {
 
   @action.bound
   fetchActiveEditionSuccess(editionIn) {
-    this.editionsByKey[editionIn.editionKey] = editionIn
+    this.editionMap[editionIn.editionKey] = editionIn
   }
 
   @action.bound
@@ -129,7 +107,7 @@ class EditionStore {
 
   @computed
   get activeEdition() {
-    return this.editionsByKey[this.activeEditionKey]
+    return this.editionMap[this.activeEditionKey]
   }
 
   @computed

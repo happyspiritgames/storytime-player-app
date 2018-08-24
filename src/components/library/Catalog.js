@@ -10,7 +10,7 @@ export default class Catalog extends Component {
   }
 
   renderRow(editions, rowCount) {
-    const cards = editions.map(edition => 
+    const cards = editions.map(edition =>
       <CatalogCard key={edition.editionKey} edition={edition} />)
 
     return (
@@ -39,9 +39,12 @@ export default class Catalog extends Component {
       next += 3
     }
     return (
-      <CardDeck>
-        {rows}
-      </CardDeck>
+      <section>
+        <h3>Find a story to play.</h3>
+        <CardDeck>
+          {rows}
+        </CardDeck>
+      </section>
     )
   }
 }
