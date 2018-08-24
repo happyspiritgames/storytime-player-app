@@ -2,14 +2,13 @@ import React, { Component } from 'react'
 import { inject, observer } from 'mobx-react'
 import Scene from './Scene'
 import Signpost from './Signpost'
-import readerApi from '../../api/readerApi'
 
-@inject('EditionStore')
+@inject('viewerStore')
 @observer
 export default class StoryBook extends Component {
 
   componentWillMount() {
-    const { EditionStore, match } = this.props
+    const { viewerStore, match } = this.props
     const { editionKey } = match.params
 
     if (!editionKey) {
@@ -17,25 +16,7 @@ export default class StoryBook extends Component {
       return
     }
 
-    EditionStore.activeEditionKey = editionKey
-    EditionStore.prepScene(editionKey)
-
-    ///// FIXME pick up here
-
-    const handleError = (label, error) => {
-      console.error(label, error)
-    }
-
-    if (editionKey && !EditionStore.hasActiveEdition) {
-      EditionStore.fetchActiveEdition()
-    }
-
-    if (!EditionStore.hasActiveScene) {
-      readerApi.getEditionScene(editionKey, 'u1pawmxp',
-        (data) => EditionStore.loadScene(editionKey, data),
-        (error) => handleError('failure', error)
-      )
-    }
+    viewerStore.activeEditionKey = editionKey
   }
 
   renderNotReady(message) {
@@ -47,13 +28,12 @@ export default class StoryBook extends Component {
   }
 
   render() {
-    const { EditionStore } = this.props
-    const { hasActiveEdition, activeEdition, hasActiveScene, activeScene } = EditionStore
+    const { viewerStore } = this.props
+    const activeEdition = viewerStore.activeEdition
+    const activeScene
 
-    if (!hasActiveEdition) {
+    if (!activeEdition || !activeScene) {
       return this.renderNotReady('Loading...one moment please.')
-    } else if (!hasActiveScene) {
-      return this.renderNotReady('Please wait while we set the scene...this should only take a second or two.')
     }
 
     const summary = activeEdition.summary

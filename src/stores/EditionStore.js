@@ -1,5 +1,4 @@
 import { observable, computed, action } from 'mobx'
-import readerApi from '../api/readerApi'
 import api from '../api'
 
 class EditionStore {
@@ -63,67 +62,18 @@ class EditionStore {
     return out
   }
 
-  // FIXME below here vvvvv
-
-  set activeEditionKey(keyIn) {
-    console.log('set active edition:', keyIn)
-    this.activeEditionKey = keyIn
-  }
-
-  set activeSceneId(idIn) {
-    console.log('set active scene:', idIn)
-    this.activeSceneId = idIn
-  }
-
   @action
-  clearActiveStory() {
-    this.activeEditionKey = undefined
-    this.activeSceneId = undefined
+  loadEdition(editionKey) {
+    this.isLoading = true
+    return api.Stories.byKey(editionKey)
+      .then(action(edition => this.editionMap.set(edition.editionKey, edition)))
+      .finally(action(() => { this.isLoading = false }))
   }
 
-  @computed
-  get hasActiveEdition() {
-    if (!this.activeEditionKey) {
-      console.log('no active edition key found')
-      return false
-    }
-    return !!this.editionMap[this.activeEditionKey]
+  getEdition(key) {
+    return this.editionMap.get(key)
   }
 
-  @action
-  fetchActiveEdition() {
-    readerApi.getEdition(this.fetchActiveEditionSuccess, this.fetchActiveEditionError)
-  }
-
-  @action.bound
-  fetchActiveEditionSuccess(editionIn) {
-    this.editionMap[editionIn.editionKey] = editionIn
-  }
-
-  @action.bound
-  fetchActiveEditionError(error) {
-    console.error(error)
-  }
-
-  @computed
-  get activeEdition() {
-    return this.editionMap[this.activeEditionKey]
-  }
-
-  @computed
-  get activeScene() {
-    if (this.activeEdition && this.activeEdition.scenes) {
-      return this.activeEdition.scenes[this.activeSceneId]
-    } else {
-      return undefined
-    }
-  }
-
-  @action
-  prepActiveScene() {
-
-  }
 }
-
 
 export default new EditionStore()
