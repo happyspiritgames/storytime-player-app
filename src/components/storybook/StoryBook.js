@@ -10,13 +10,20 @@ export default class StoryBook extends Component {
   componentWillMount() {
     const { viewerStore, match } = this.props
     const { key } = match.params
-
     if (!key) {
       console.log('Not sure what to load; no edition key')
       return
     }
+    viewerStore.play(key)
+  }
 
-    viewerStore.activeEdition = key
+  componentWillReceiveProps() {
+    const { viewerStore, match } = this.props
+    const { key } = match.params
+
+    if (key !== viewerStore.activeEdition) {
+      viewerStore.play(key)
+    }
   }
 
   renderNotReady(message) {

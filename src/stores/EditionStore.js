@@ -108,6 +108,9 @@ class EditionStore {
         editionScenes.set(sceneId, scene)
         return scene
       }))
+      .catch(action(err => {
+        console.error(err)
+      }))
       .finally(action(() => { this.isLoading = false }))
   }
 }

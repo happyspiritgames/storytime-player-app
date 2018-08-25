@@ -44,6 +44,7 @@ class ViewerStore {
 
   @action
   play(key) {
+    this.exit()
     this.activeEdition = key
   }
 
