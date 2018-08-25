@@ -9,14 +9,14 @@ export default class StoryBook extends Component {
 
   componentWillMount() {
     const { viewerStore, match } = this.props
-    const { editionKey } = match.params
+    const { key } = match.params
 
-    if (!editionKey) {
+    if (!key) {
       console.log('Not sure what to load; no edition key')
       return
     }
 
-    viewerStore.activeEditionKey = editionKey
+    viewerStore.activeEdition = key
   }
 
   renderNotReady(message) {
@@ -29,20 +29,20 @@ export default class StoryBook extends Component {
 
   render() {
     const { viewerStore } = this.props
-    const activeEdition = viewerStore.activeEdition
-    const activeScene
+    const edition = viewerStore.activeEdition
+    const scene = viewerStore.activeScene
 
-    if (!activeEdition || !activeScene) {
+    if (!edition || !scene) {
       return this.renderNotReady('Loading...one moment please.')
     }
 
-    const summary = activeEdition.summary
+    const summary = edition.summary
     return (
       <div id="storybook">
         <h3 className="text-center">{summary.title}</h3>
         <h6 className="text-center"><em>by {summary.penName}</em></h6>
-        <Scene scene={activeScene} />
-        <Signpost scene={activeScene} />
+        <Scene activeScene={scene} />
+        <Signpost scene={scene} />
       </div>
     )
   }

@@ -6,7 +6,8 @@ class EditionStore {
   @observable lastFetchedRecommendationsAt = null
   @observable lastFetchedEditionsAt = null
   @observable recommended = []
-  @observable editionMap = observable.map()
+  @observable editionCache = observable.map()
+  @observable sceneCache = observable.map()
 
   @action loadRecommendations() {
     this.isLoading = true
@@ -14,7 +15,7 @@ class EditionStore {
       .then(action(recommendations => {
         this.recommended = []
         recommendations.forEach(recommendation => {
-          this.editionMap.set(recommendation.editionKey, recommendation)
+          this.editionCache.set(recommendation.editionKey, recommendation)
           this.recommended.push(recommendation.editionKey)
         })
         this.lastFetchedRecommendationsAt = Date.now()
@@ -32,7 +33,7 @@ class EditionStore {
   @computed
   get topRecommendation() {
     if (this.hasRecommendations) {
-      return this.editionMap.get(this.recommended[0])
+      return this.editionCache.get(this.recommended[0])
     } else {
       return null
     }
@@ -44,7 +45,7 @@ class EditionStore {
     return api.Stories.all()
       .then(action(covers => {
         this.recommended = []
-        covers.forEach(edition => this.editionMap.set(edition.editionKey, edition))
+        covers.forEach(edition => this.editionCache.set(edition.editionKey, edition))
         this.lastFetchedEditionsAt = Date.now()
       }))
       .finally(action(() => { this.isLoading = false }))
@@ -58,22 +59,57 @@ class EditionStore {
   @computed
   get editions() {
     const out = []
-    this.editionMap.forEach(edition => {out.push(edition)})
+    this.editionCache.forEach(edition => {out.push(edition)})
     return out
+  }
+
+  getEdition(key) {
+    return this.editionCache.get(key)
+  }
+
+  getScene(editionKey, sceneId) {
+    let scene
+    const editionScenes = this.sceneCache.get(editionKey)
+    if (editionScenes) {
+      scene = editionScenes.get(sceneId)
+    }
+    return scene
   }
 
   @action
   loadEdition(editionKey) {
+    const cachedEdition = this.getEdition(editionKey)
+    if (cachedEdition) {
+      return Promise.resolve(cachedEdition)
+    }
     this.isLoading = true
     return api.Stories.byKey(editionKey)
-      .then(action(edition => this.editionMap.set(edition.editionKey, edition)))
+      .then(action(edition => {
+        this.editionCache.set(edition.editionKey, edition)
+        return edition
+      }))
       .finally(action(() => { this.isLoading = false }))
   }
 
-  getEdition(key) {
-    return this.editionMap.get(key)
+  @action
+  loadScene(editionKey, sceneId) {
+    if (!this.sceneCache.has(editionKey)) {
+      this.sceneCache.set(editionKey, observable.map())
+    }
+    const editionScenes = this.sceneCache.get(editionKey)
+    const cachedScene = editionScenes.get(sceneId)
+    if (cachedScene) {
+      return Promise.resolve(cachedScene)
+    }
+    this.isLoading = true
+    return api.Stories.scene(editionKey, sceneId)
+      .then(action(scene => {
+        let editionScenes = this.sceneCache.get(editionKey)
+        editionScenes.set(sceneId, scene)
+        return scene
+      }))
+      .finally(action(() => { this.isLoading = false }))
   }
-
 }
 
 export default new EditionStore()
